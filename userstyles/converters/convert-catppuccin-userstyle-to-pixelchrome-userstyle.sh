@@ -1,5 +1,5 @@
 PIXELCHROME_LIB_URL="https://raw.githubusercontent.com/badminimum/pixelchrome/refs/heads/master/userstyles/pixelchrome.lib.less"
-PIXELCHROME_FLAVOR_ENTRY="pixelchrome:Pixel Chrome"
+PIXELCHROME_FLAVOR_ENTRY="pixelchrome:Pixel Chrome*"
 
 DEFAULT_FILE="$(realpath .)/catppuccin.user.less"
 FILE="${1:-$DEFAULT_FILE}"
@@ -29,12 +29,16 @@ mkdir -p /tmp/pixelchrome-catppuccin-userstyle-converter/
 rm "$TEMP_FILE"
 cp "$ORIGINAL_FILE" "$TEMP_FILE"
 
-# Update @import url
 sed -i \
   -e "s|^@import \".*\";|@import \"$PIXELCHROME_LIB_URL\";|" \
+  -e "/@var select lightFlavor/s/\*//g" \
+  -e "/@var select darkFlavor/s/\*//g" \
+  -e "/@var select accentColor/s/\*//g" \
+  -e "/@var select accentColor/s/subtext0:Gray/subtext0:Gray*/" \
   -e "s|\(@var select lightFlavor \"Light Flavor\" \[.*\)\]|\1, \"$PIXELCHROME_FLAVOR_ENTRY\"]|" \
   -e "s|\(@var select darkFlavor \"Dark Flavor\" \[.*\)\]|\1, \"$PIXELCHROME_FLAVOR_ENTRY\"]|" \
-  -e "s|^@name \(.*\) Catppuccin$|@name \1 PixelChrome (Catppuccin Extension)|" \
+  -e "s|^@name \(.*\) Catppuccin$|@name \1 Pixel Chrome (Catppuccin Extension)|" \
+  -e "s|^@author Catppuccin$|@author Catppuccin, badminimum|" \
   -e "s|^@description \(.*\)$|@description \1, also with a Monochrome Theme (Pixel Chrome)|" \
   -e "/^@updateURL /d" \
   "$TEMP_FILE"
